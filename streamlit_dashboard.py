@@ -24,7 +24,7 @@ class GCNClassifier(torch.nn.Module):
 edge_index = torch.tensor(np.load("edge_index.npy"), dtype=torch.long)
 edge_attr = torch.tensor(np.load("edge_features.npy"), dtype=torch.float)
 x = torch.tensor(np.load("node_features.npy"), dtype=torch.float)
-y = torch.tensor(np.load("edge_labels.npy"), dtype=torch.long)
+y = torch.tensor(np.load("labels.npy"), dtype=torch.long)
 data = Data(x=x, edge_index=edge_index)
 
 # --- Load GNN model ---
