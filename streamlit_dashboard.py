@@ -9,16 +9,22 @@ import pickle
 
 # --- GNN Model ---
 class GCNClassifier(torch.nn.Module):
-    def __init__(self, input_dim, hidden_dim=16):
+    def __init__(self, input_dim=4, hidden_dim=64):
         super().__init__()
         self.conv1 = GCNConv(input_dim, hidden_dim)
-        self.conv2 = GCNConv(hidden_dim, 2)
+        self.conv2 = GCNConv(hidden_dim, hidden_dim)
+        self.edge_mlp = torch.nn.Sequential(
+            torch.nn.Linear(hidden_dim, hidden_dim),
+            torch.nn.ReLU(),
+            torch.nn.Linear(hidden_dim, 2)
+        )
 
     def forward(self, data):
         x, edge_index = data.x, data.edge_index
         x = torch.relu(self.conv1(x, edge_index))
-        x = self.conv2(x, edge_index)
-        return torch.nn.functional.log_softmax(x, dim=1)
+        x = torch.relu(self.conv2(x, edge_index))
+        edge_rep = x[edge_index[0]] + x[edge_index[1]]  # Symmetric aggregation
+        return self.edge_mlp(edge_rep)
 
 # --- Load Data ---
 edge_index = torch.tensor(np.load("edge_index.npy"), dtype=torch.long)
