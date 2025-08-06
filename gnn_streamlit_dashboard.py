@@ -25,10 +25,10 @@ class EdgeClassifierGNN(torch.nn.Module):
         return self.edge_mlp(edge_embed)
 
 def load_data():
-    edge_index = torch.tensor(np.load("data/edge_index.npy"), dtype=torch.long)
-    edge_attr = torch.tensor(np.load("data/edge_features.npy"), dtype=torch.float32)
-    node_features = torch.tensor(np.load("data/node_features.npy"), dtype=torch.float32)
-    edge_labels = torch.tensor(np.load("data/edge_labels.npy"), dtype=torch.long)
+    edge_index = torch.tensor(np.load("edge_index.npy"), dtype=torch.long)
+    edge_attr = torch.tensor(np.load("edge_features.npy"), dtype=torch.float32)
+    node_features = torch.tensor(np.load("node_features.npy"), dtype=torch.float32)
+    edge_labels = torch.tensor(np.load("labels.npy"), dtype=torch.long)
     return Data(x=node_features, edge_index=edge_index, edge_attr=edge_attr, y=edge_labels)
 
 def visualize_predictions(edge_index, predictions):
