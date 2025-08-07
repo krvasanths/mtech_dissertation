@@ -56,7 +56,7 @@ def load_gnn_model(model_path="edge_classifier_gnn.pth"):
 @st.cache_resource
 def load_graph():
     with open("qkd_topology.gpickle", "rb") as f:
-    return pickle.load(f)
+        return pickle.load(f)
     #return nx.read_gpickle("qkd_topology.gpickle")
 
 # Load GNN input data
