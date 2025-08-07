@@ -5,10 +5,28 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch
 from torch_geometric.data import Data
-from train_edge_classifier import EdgeClassifierGNN
 from train_drl_agent import DQNAgent
 import os
+import torch.nn.functional as F
+from torch_geometric.nn import GCNConv
 
+class EdgeClassifierGNN(torch.nn.Module):
+    def __init__(self, node_feat_dim, edge_feat_dim, hidden_dim=64):
+        super().__init__()
+        self.conv1 = GCNConv(node_feat_dim, hidden_dim)
+        self.conv2 = GCNConv(hidden_dim, hidden_dim)
+        self.edge_mlp = torch.nn.Sequential(
+            torch.nn.Linear(2 * hidden_dim + edge_feat_dim, hidden_dim),
+            torch.nn.ReLU(),
+            torch.nn.Linear(hidden_dim, 2)
+        )
+
+    def forward(self, x, edge_index, edge_attr):
+        x = self.conv1(x, edge_index).relu()
+        x = self.conv2(x, edge_index).relu()
+        edge_embeddings = torch.cat([x[edge_index[0]], x[edge_index[1]], edge_attr], dim=1)
+        return self.edge_mlp(edge_embeddings)
+        
 # Load GNN model
 @st.cache_resource
 def load_gnn_model(model_path="edge_classifier_gnn.pth"):
