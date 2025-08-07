@@ -10,6 +10,7 @@ from torch_geometric.nn import GCNConv
 import torch.nn as nn
 import random
 from tqdm import tqdm
+import pickle
 
 class EdgeClassifierGNN(torch.nn.Module):
     def __init__(self, node_feat_dim, edge_feat_dim, hidden_dim=64):
@@ -54,7 +55,9 @@ def load_gnn_model(model_path="edge_classifier_gnn.pth"):
 # Load network graph
 @st.cache_resource
 def load_graph():
-    return nx.read_gpickle("qkd_topology.gpickle")
+    with open("qkd_topology.gpickle", "rb") as f:
+    return pickle.load(f)
+    #return nx.read_gpickle("qkd_topology.gpickle")
 
 # Load GNN input data
 @st.cache_resource
