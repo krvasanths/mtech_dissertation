@@ -108,7 +108,11 @@ def main():
     pos = nx.spring_layout(G, seed=42)
     plt.figure(figsize=(10, 6))
     edge_colors = ["red" if G[u][v].get("qber", 0) > 0.11 else "green" for u, v in G.edges()]
-    edge_labels = { (u, v): f"{G[u][v]['qber']*100:.1f}%" for u, v in G.edges() }
+    #edge_labels = { (u, v): f"{G[u][v]['qber']*100:.1f}%" for u, v in G.edges() }
+    edge_labels = {
+    (u, v): f"{G[u][v].get('qber', 0.0) * 100:.1f}%"
+    for u, v in G.edges()
+    }
     node_colors = ["orange" if n in route else "skyblue" for n in G.nodes()]
 
     nx.draw(G, pos, node_color=node_colors, with_labels=True, edge_color=edge_colors, node_size=500)
