@@ -1,10 +1,10 @@
+import os
 import streamlit as st
 import networkx as nx
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
 from torch_geometric.data import Data
-import os
 import torch.nn.functional as F
 from torch_geometric.nn import GCNConv
 import torch.nn as nn
