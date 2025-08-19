@@ -261,8 +261,8 @@ def draw_topology(G, pos, path=None, title=""):
 # -----------------------------
 # Streamlit UI
 # -----------------------------
-st.set_page_config(page_title="QKD + PyTorch GNN Routing Demo", layout="wide")
-st.title("🔐 QKD Network with Trainable PyTorch GNN (Edge Security) + Safest Path")
+st.set_page_config(page_title="Dynamic QKD Adaption using GNN & GRN : Demo", layout="wide")
+st.title("Dynamic QKD Adaption using GNN & GRN : Demo")
 
 with st.sidebar:
     st.header("⚙️ Graph")
@@ -271,20 +271,20 @@ with st.sidebar:
     radius = st.slider("Connectivity radius", 0.15, 0.6, 0.35, 0.01)
 
     st.markdown("---")
-    st.header("🧠 GNN")
+    st.header("GNN")
     K = st.slider("Message-passing steps (K)", 1, 4, 2, 1)
     epochs = st.slider("Training epochs", 20, 500, 150, 10)
     lr = st.select_slider("Learning rate", options=[1e-3, 3e-3, 5e-3, 1e-2, 3e-2], value=1e-2)
     truth_thresh = st.slider("Ground-truth secure threshold (QBER)", 0.05, 0.5, 0.2, 0.01)
 
     st.markdown("---")
-    st.header("🕵️ Eavesdropping")
+    st.header("Eavesdropping")
     enable_eve = st.checkbox("Enable eavesdropping (right panel)", value=False)
     eve_fraction = st.slider("Fraction of edges attacked", 0.05, 0.8, 0.25, 0.05)
     eve_severity = st.slider("QBER bump severity", 0.05, 1.0, 0.6, 0.05)
 
     st.markdown("---")
-    st.header("🗺️ Routing weights")
+    st.header("Routing weights")
     alpha = st.slider("α: distance weight", 0.0, 3.0, 1.0, 0.1)
     beta  = st.slider("β: risk weight", 0.0, 5.0, 2.0, 0.1)
     pen_insec = st.slider("Penalty (insecure edge)", 0.0, 2.0, 0.5, 0.1)
@@ -338,7 +338,7 @@ metrics_B = path_metrics(G, path_B)
 left, right = st.columns(2, gap="large")
 
 with left:
-    st.subheader("🟢 Without Eavesdropping (trained on base QBER)")
+    st.subheader("Without Eavesdropping (trained on base QBER)")
     draw_topology(G_A, pos, path=path_A, title="Green=Secure, Red=Insecure; safest path in blue")
     if path_A:
         st.write("**Path:**", " → ".join(map(str, path_A)))
@@ -347,7 +347,7 @@ with left:
         st.warning("No path found under current weights/graph.")
 
 with right:
-    st.subheader("🔴 With Eavesdropping (retrained on attacked QBER)")
+    st.subheader("With Eavesdropping (retrained on attacked QBER)")
     draw_topology(G, pos, path=path_B, title="Attacked edges thicker; Green=Secure, Red=Insecure; path in blue")
     if enable_eve and attacked:
         st.caption(f"Attacked edges: {len(attacked)} (drawn thicker)")
@@ -375,10 +375,10 @@ with st.expander("Inspect edge features & GNN predictions (Scenario B shown)"):
         })
     st.dataframe(rows, hide_index=True)
 
-st.markdown("""
-**Notes**
-- This is a true trainable **PyTorch GNN** (message passing + edge scorer) but kept tiny so it trains in a few hundred epochs quickly on CPU.
-- The **ground-truth labels** come from QBER vs **“Ground-truth secure threshold (QBER)”**. The GNN learns to map node context + link scalars → edge security.
-- We **retrain** for the eavesdropping case because QBER changes; you can compare how the predicted secure map and safest path respond.
-- Tune **K (message-passing steps)**, **epochs**, **learning rate**, and **routing weights** to see different behaviors.
-""")
+#st.markdown("""
+#**Notes**
+#- This is a true trainable **PyTorch GNN** (message passing + edge scorer) but kept tiny so it trains in a few hundred epochs quickly on CPU.
+#- The **ground-truth labels** come from QBER vs **“Ground-truth secure threshold (QBER)”**. The GNN learns to map node context + link scalars → edge security.
+#- We **retrain** for the eavesdropping case because QBER changes; you can compare how the predicted secure map and safest path respond.
+#- Tune **K (message-passing steps)**, **epochs**, **learning rate**, and **routing weights** to see different behaviors.
+#""")
